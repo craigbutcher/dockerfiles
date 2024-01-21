@@ -5,30 +5,27 @@
 #   This file describes how to download and install elinks in a 
 #   container with all dependencies installed.
 #
-#   Tested on Alpine edge image
+# TESTED: Alpine latest image
 #
 # USAGE: Build
 #   # Download elinks Dockerfile
-#   wget https://github.com/craigbutcher/dockerfiles/raw/main/elinks/dockerfile
+#   $ wget https://github.com/craigbutcher/dockerfiles/raw/main/elinks/dockerfile
 #
-#   # Build wrp image
-#   docker build -t elinks .
+#   # Build elinks image
+#   $ docker build -t elinks .
 #
-#   # Run the wrp image either via command or docker-compose
-#   docker run -it -p 80:80 -p 443:443 elinks
-#   or   
-#   docker compose up
-
-# Base docker image
+#   # Run the elinks image
+#   $ docker run -it elinks
 
 FROM alpine:latest
 
 RUN apk --no-cache add \
-        wget ncurses-terminfo-base && \
-        wget https://github.com/rkd77/elinks/releases/download/v0.15.1/elinks-0.15.1-armhf-bin.tar.xz && \
-        tar xvf elinks-0.15.1-armhf-bin.tar.xz && \
-        cd elinks-0.15.1-armhf-bin && \
-        mv elinks /usr/local/bin/ && \
+        curl jq tar xz && \
+        curl -s https://api.github.com/repos/rkd77/elinks/releases/latest | \
+        jq -r '.assets[0].browser_download_url' | \
+        xargs -I {} sh -c 'file=$(basename {}); curl -L {} -o "$file" && tar -xf "$file"' && \
+        dir=$(find . -type d -name "*elinks*") && \
+        mv $dir/elinks /usr/local/bin/ && \
         rm -rf elinks*
 
 CMD ["/usr/local/bin/elinks"]
