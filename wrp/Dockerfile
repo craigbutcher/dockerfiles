@@ -21,8 +21,17 @@
 
 FROM alpine:edge
 
-RUN apk update && apk add chromium wget && \
-    wget https://github.com/tenox7/wrp/releases/download/4.5.2/wrp-arm64-linux && \
-    chmod +x wrp-arm64-linux
+ARG TARGETPLATFORM
+
+RUN apk --no-cache add chromium curl jq && \
+    case "$TARGETPLATFORM" in \
+        'linux/amd64') BIN='wrp-amd64-linux' ;; \
+        'linux/arm64') BIN='wrp-arm64-linux' ;; \
+        'linux/arm/v7') BIN='wrp-arm-linux' ;; \
+        *) echo "Unsupported platform: $TARGETPLATFORM"; exit 1 ;; \
+    esac && \
+    curl -s https://api.github.com/repos/tenox7/wrp/releases/latest | \
+    jq -r --arg bin "$BIN" '.assets[] | select(.name == $bin).browser_download_url' | \
+    xargs -I {} sh -c 'file=$(basename {}); curl -L {} -o "$file" && chmod +x "$file"'
 
 CMD ["/wrp-arm64-linux"]
