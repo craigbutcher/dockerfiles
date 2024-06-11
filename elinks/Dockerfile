@@ -2,7 +2,7 @@
 # AUTHOR: Craig Butcher <hello@craigbutcher.net>
 #
 # COMMENTS: 
-#   This file describes how to download and install elinks in a 
+#   This file describes how to download and install the latest elinks in a 
 #   container with all dependencies installed.
 #
 # TESTED: Alpine latest image
@@ -26,6 +26,7 @@ RUN apk --no-cache add \
         xargs -I {} sh -c 'file=$(basename {}); curl -L {} -o "$file" && tar -xf "$file"' && \
         dir=$(find . -type d -name "*elinks*") && \
         mv $dir/elinks /usr/local/bin/ && \
-        rm -rf elinks*
+        rm -rf elinks* && \
+        apk del curl jq xz
 
 CMD ["/usr/local/bin/elinks"]

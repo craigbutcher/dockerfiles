@@ -5,25 +5,20 @@
 #   This file describes how to download and install nethack in a
 #   container with all dependencies installed.
 #
-#   Tested on Alpine latest image
+# TESTED: Alpine latest image
 #
 # USAGE: Build
 #   # Download nethack Dockerfile
-#   wget https://github.com/craigbutcher/dockerfiles/raw/main/nbsdgames/dockerfile
+#   $ wget https://github.com/craigbutcher/dockerfiles/raw/main/nbsdgames/dockerfile
 #
-#   # Build nbsdgames image
-#   docker build -t nbsdgames .
+#   # Build nethack image
+#   $ docker build -t nethack .
 #
-#   # Run the nbsdgames image
-#   docker run -it nbsdgames
+#   # Run the nethack image
+#   $ docker run -it nethack
 
-# Base docker image
-
-# Base docker image
 FROM alpine:latest
-# LABEL:
 
-# Run up
 RUN apk --no-cache add nethack
 
 CMD ["/usr/bin/nethack"]

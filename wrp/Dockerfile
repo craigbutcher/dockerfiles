@@ -1,7 +1,7 @@
 # DESCRIPTION: Run WRP in a container
 # AUTHOR: Craig Butcher <hello@craigbutcher.net>
 #
-# COMMENTS: 
+# COMMENTS:
 #	This file describes how to build wrp in a container with all
 #	dependencies installed.
 #
@@ -15,7 +15,7 @@
 #	docker build -t wrp .
 #
 #   # Run the wrp image either via command or docker-compose
-#	docker run -it -p 8080:8080 wrp
+#	docker run -it -p 9000:8080 wrp
 #   or
 #   docker compose up
 
@@ -32,6 +32,7 @@ RUN apk --no-cache add chromium curl jq && \
     esac && \
     curl -s https://api.github.com/repos/tenox7/wrp/releases/latest | \
     jq -r --arg bin "$BIN" '.assets[] | select(.name == $bin).browser_download_url' | \
-    xargs -I {} sh -c 'file=$(basename {}); curl -L {} -o "$file" && chmod +x "$file"'
+    xargs -I {} sh -c 'file=$(basename {}); curl -L {} -o "$file" && chmod +x "$file"' && \
+    apk del curl jq
 
 CMD ["/wrp-arm64-linux"]

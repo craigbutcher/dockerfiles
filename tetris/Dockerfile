@@ -21,6 +21,6 @@
 
 FROM alpine:latest
 
-RUN apk --no-cache add emacs
+RUN apk --no-cache add emacs-nox
 
 CMD ["/usr/bin/emacs", "-f", "tetris"]
